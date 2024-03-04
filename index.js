@@ -18,20 +18,22 @@ const updateLight = async (light) => {
   
   try {
     const device = await Lifx.createDevice(light);
-        
-    await device.setColor({
-      color: {
-        hue: 1.0,
-        saturation: 0.0,
-        brightness: 0.5,
-        kelvin: 2700
-      },
-      duration: 1000
-    });
+    
+    // This pings the device.
+    await device.deviceGetPower();
 
     if (!state[label]) {
-      state[label] = true
       // Set light to color based on time of day
+      await device.setColor({
+        color: {
+          hue: 1.0,
+          saturation: 0.0,
+          brightness: 0.3,
+          kelvin: 2700
+        },
+        duration: 1000
+      });      
+      state[label] = true
     }
 
   } catch (e) {
