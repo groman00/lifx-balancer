@@ -1,18 +1,8 @@
-
 const Lifx = require('node-lifx-lan');
 const config = require('./config');
+const state = {}
 
 const INTERVAL = 5000
-
-const getLightConfig = async () => {
-  const devices = await Lifx.discover();
-
-  console.log(devices.map(d => ({
-    label: d['deviceInfo'].label,
-    mac: d['mac'],
-    ip: d['ip']
-  })));
-}
 
 const delay = () => new Promise((resolve) => {
   const interval = setInterval(() => {
@@ -22,26 +12,31 @@ const delay = () => new Promise((resolve) => {
 });
 
 const updateLight = async (light) => {
-  console.log(`Updating light ${light.label}`);
+  const { label } = light;
 
+  console.log(`Updating light ${label}`);
+  
   try {
     const device = await Lifx.createDevice(light);
-    const lightState = await device.getLightState();
-
-    console.log({ label: light.label, power: lightState.power })
-
-    return device.setColor({
+        
+    await device.setColor({
       color: {
         hue: 1.0,
         saturation: 0.0,
-        brightness: 0.8,
-        kelvin: 3500
+        brightness: 0.5,
+        kelvin: 2700
       },
       duration: 1000
     });
 
+    if (!state[label]) {
+      state[label] = true
+      // Set light to color based on time of day
+    }
+
   } catch (e) {
-    console.log(`${light.label} unavailable`);
+    state[label] = false;
+    console.log(`${label} unavailable`);
   }
 
   return Promise.resolve();
@@ -60,7 +55,7 @@ const run = async () => {
 
   await Promise.all(lightPromises);
 
-  console.log('all done');
+  console.log('all done', state);
 
   await delay();
   
