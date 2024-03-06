@@ -20,6 +20,10 @@ const delay = () => new Promise((resolve) => {
   }, INTERVAL);
 });
 
+const log = (str) => {
+  // log(str)
+} 
+
 const toColorByTime = () => {
   const date = new Date();
   const hourMinute = parseInt(`${date.getHours()}${date.getMinutes()}`);
@@ -38,14 +42,14 @@ const toColorByTime = () => {
       break;
     }
   }
-  // console.log('returning color', color);
+  // log('returning color', color);
   return color;
 };
 
 const updateLight = async (light) => {
   const { label } = light;
 
-  // console.log(`Updating light ${label}`);
+  // log(`Updating light ${label}`);
 
   try {
     const device = await Lifx.createDevice(light);
@@ -63,14 +67,15 @@ const updateLight = async (light) => {
 
   } catch (e) {
     state[label] = false;
-    // console.log(`${label} unavailable`);
+    // log(e);
+    // log(`${label} unavailable`);
   }
 
   return Promise.resolve();
 }
 
 const run = async () => {
-  // console.log('running');
+  // log('running');
 
   const lightPromises = [];
 
@@ -82,7 +87,7 @@ const run = async () => {
 
   await Promise.all(lightPromises);
 
-  // console.log('all done', state);
+  // log('all done', state);
 
   await delay();
 
