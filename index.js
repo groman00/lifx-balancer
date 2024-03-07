@@ -9,7 +9,7 @@ const {
   dinner,
 } = require('./colors');
 
-const INTERVAL = 5000;
+const INTERVAL = 10000;
 
 const state = {}
 
@@ -21,7 +21,7 @@ const delay = () => new Promise((resolve) => {
 });
 
 const log = (str) => {
-  // log(str)
+  // console.log(str)
 } 
 
 const toColorByTime = () => {
@@ -49,7 +49,7 @@ const toColorByTime = () => {
 const updateLight = async (light) => {
   const { label } = light;
 
-  // log(`Updating light ${label}`);
+  log(`Updating light ${label}`);
 
   try {
     const device = await Lifx.createDevice(light);
@@ -67,15 +67,15 @@ const updateLight = async (light) => {
 
   } catch (e) {
     state[label] = false;
-    // log(e);
-    // log(`${label} unavailable`);
+    log(e);
+    log(`${label} unavailable`);
   }
 
   return Promise.resolve();
 }
 
 const run = async () => {
-  // log('running');
+  log('running');
 
   const lightPromises = [];
 
@@ -87,11 +87,14 @@ const run = async () => {
 
   await Promise.all(lightPromises);
 
-  // log('all done', state);
+  log('all done', state);
 
   await delay();
 
   run()
 }
 
-run();
+(async () => {
+  await Lifx.init();
+  run();
+})();
