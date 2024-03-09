@@ -9,6 +9,12 @@ module.exports.sunrise = {
   kelvin: 7500,
 };
 
+module.exports.afternoon = {
+  ...base,
+  brightness: 0.85,
+  kelvin: 3500,
+};
+
 module.exports.sunset = {
   ...base,
   brightness: 0.60,

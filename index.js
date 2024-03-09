@@ -1,6 +1,7 @@
 const Lifx = require('node-lifx-lan');
 const config = require('./config');
 const { 
+  afternoon,
   sunrise, 
   sunset, 
   sleep, 
@@ -26,16 +27,20 @@ const log = (str) => {
 
 const toColorByTime = () => {
   const date = new Date();
-  const hourMinute = parseInt(`${date.getHours()}${date.getMinutes()}`);
+  const minutes = date.getMinutes();
+  const minutesPadding = minutes < 0 ? '0' : '';
+  const hourMinute = `${date.getHours()}${minutesPadding}${minutes}`;
   const map = {
     620: sunrise,
+    1500: afternoon,
     1754: sunset,
     1830: dinner,
     2155: night,
     2230: lateNight,
     2330: sleep,
   };
-  
+  let color;
+
   for (key of Object.keys(map).reverse()) {
     if (hourMinute >= parseInt(key)) {
       color = map[key];
